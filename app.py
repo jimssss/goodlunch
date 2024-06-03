@@ -161,7 +161,7 @@ def save_to_db(user_id, food_info):
 # 載入環境變數
 load_dotenv()
 
-# 從環境變數中獲取API令牌和密鑰
+# 從環境變數中獲取API token和密鑰
 OPENAI_EMBEDDING_DEPLOYMENT_NAME = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT_NAME")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
@@ -250,7 +250,7 @@ system_prompt = ("""Hello, You are a senior nutritionist. Today,
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
-        ("human", "回答請在50字以內，不然會有懲罰，請用正體中文回答以下問題:{input}"),
+        ("human", "回答請在100字以內，不然會有懲罰，請用正體中文回答以下問題:{input}"),
     ]
 )
 
@@ -360,8 +360,10 @@ def handle_message(event):
                 TextMessage(text=f"{response}")
             )
         elif event.message.text == "推薦吃什麼?":
-            response=search_today_diet_info(event.source.user_id,datetime.now().date())
              # 用LLM建議下一餐的類型
+            diet_info=search_today_diet_info(event.source.user_id,datetime.now().date())
+            response=rag_chain.invoke({"input": f"{diet_info}，請問下一餐我應該吃什麼？請提出具體的食物名稱，例如:雞肉三明治"})
+
             line_bot_api.reply_message(
                 event.reply_token,
                 TextMessage(text=f"{response['answer']}")
