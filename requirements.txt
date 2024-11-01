@@ -1,0 +1,14 @@
+dotenv
+Pillow
+uvicorn
+langchain-core
+langchain-google-genai
+langchain-openai
+langchain-chroma
+langchain-text-splitters
+langchain-community
+line-bot-sdk
+Chroma
+PyPDF2
+azure-ai-embed
+azure-storage-blob
